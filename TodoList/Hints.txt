@@ -1,0 +1,5 @@
+Temp : (()) ####
+((1)) localhost\controller\edit  => without the id still opening, check query string  ####
+((2)) Study the regular expression to validate that mail contains '.com' ####
+((3)) Make the search more dynamic ####
+((4)) Duplicated foriegn key in category table ####
