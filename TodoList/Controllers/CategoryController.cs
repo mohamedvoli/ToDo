@@ -12,6 +12,7 @@ using TodoList.Models.Repos;
 
 namespace TodoList.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private ITodoRepo<Category> _categoryRepo;
@@ -22,7 +23,6 @@ namespace TodoList.Controllers
           _userManager = userManager;
         }
         // GET: CategoryController
-        [Authorize]
         [HttpGet]
         public ActionResult Index(string SearchString)
         {
@@ -36,7 +36,6 @@ namespace TodoList.Controllers
         }
 
         // GET: CategoryController/Create
-        [Authorize]
         public ActionResult Create()
         {
              ViewData["UserId"] = _userManager.GetUserId(User);
@@ -44,7 +43,6 @@ namespace TodoList.Controllers
         }
 
         // POST: CategoryController/Create
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Category category)
@@ -61,7 +59,6 @@ namespace TodoList.Controllers
         }
 
         // GET: CategoryController/Edit/5
-        [Authorize]
         public ActionResult Edit(int id)
         {
             if (id == null)
@@ -77,7 +74,6 @@ namespace TodoList.Controllers
         }
 
         // POST: CategoryController/Edit/5
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit( Category category)
@@ -94,7 +90,6 @@ namespace TodoList.Controllers
         }
 
         // GET: CategoryController/Delete/5
-        [Authorize]
         public ActionResult Delete(int id)
         {
             var Category = _categoryRepo.Find(id);
@@ -102,7 +97,6 @@ namespace TodoList.Controllers
         }
 
         // POST: CategoryController/Delete/5
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Category category)

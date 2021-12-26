@@ -42,10 +42,21 @@ namespace TodoList.Models.Repos
             var categories = db.Categories.Where(a =>a.UserId == id ).ToList();
             return categories;
         }
+
+        public List<Category> ListFinishedTasks(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Category> Search(string term,string id)
         {
             var Categories = db.Categories.Where(x => (x.Title.Contains(term)) && (x.UserId == id)).ToList();
             return Categories;
+        }
+
+        public List<Category> SearchFinishedTasks(string term, string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

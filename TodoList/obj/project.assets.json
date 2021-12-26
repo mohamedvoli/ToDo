@@ -7498,11 +7498,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moham\\source\\repos\\TodoList\\TodoList.csproj",
+      "projectUniqueName": "C:\\Users\\moham\\OneDrive\\Documents\\GitHub\\ToDo\\TodoList\\TodoList.csproj",
       "projectName": "TodoList",
-      "projectPath": "C:\\Users\\moham\\source\\repos\\TodoList\\TodoList.csproj",
+      "projectPath": "C:\\Users\\moham\\OneDrive\\Documents\\GitHub\\ToDo\\TodoList\\TodoList.csproj",
       "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moham\\source\\repos\\TodoList\\obj\\",
+      "outputPath": "C:\\Users\\moham\\OneDrive\\Documents\\GitHub\\ToDo\\TodoList\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config",

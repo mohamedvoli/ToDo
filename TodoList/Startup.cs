@@ -67,7 +67,7 @@ namespace TodoList
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Category}/{action=Index}/{id?}");
+                    pattern: "{controller=TodoTasks}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
