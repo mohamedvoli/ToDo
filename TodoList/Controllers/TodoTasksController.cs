@@ -28,7 +28,7 @@ namespace TodoList.Controllers
         }
 
         // GET: TodoTasksController
-        public ActionResult Index(string SearchingTerm)
+        public ActionResult Index(string? SearchingTerm)
         {
             var UserId = _UserManager.GetUserId(User);
             List<TodoTask> AllTasks = _TaskRepo.List(UserId);
@@ -39,7 +39,7 @@ namespace TodoList.Controllers
             return View(AllTasks);
         }
         // GET : TodoTaskController/FinishedTasks
-        public ActionResult FinishedTasks(string SearchingTerm)
+        public ActionResult FinishedTasks(string? SearchingTerm)
         {
             var UserId = _UserManager.GetUserId(User);
             List<TodoTask> AllTasks = _TaskRepo.ListFinishedTasks(UserId);
@@ -59,27 +59,33 @@ namespace TodoList.Controllers
         // GET: TodoTasksController/Create
         public ActionResult Create()
         {
-            return View(SetTheModelToGetMethod());
+            var AllCategories = FillInSelectList(_UserManager.GetUserId(User));
+            CreateTaskVm model = new CreateTaskVm
+            {
+                Categories = AllCategories
+            };
+            return View(model);
         }
 
         // POST: TodoTasksController/Create
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(TaskCategoryVm model)
+        public async Task<ActionResult> CreateAsync(CreateTaskVm model)
         {
 
             var UserId = _UserManager.GetUserId(User);
             if (ModelState.IsValid)
             {
-                try
+                if (model.CategoryId == -1)
                 {
-                    if (model.CategoryId == -1)
-                    {
-                        ViewData["Message"] = "Please select a category!"; 
-                        return View(SetTheModelToGetMethod());
-                    }
-                    else
+                    ModelState.AddModelError("CategoryId","Please Select a category!");
+                    model.Categories = FillInSelectList(UserId);
+                    return View(model);
+                }
+                else
+                {
+                    try
                     {
                         var category = _CategoryRepo.Find(model.CategoryId);
                         var User = await _UserManager.FindByIdAsync(UserId);
@@ -95,16 +101,16 @@ namespace TodoList.Controllers
                         _TaskRepo.Add(ValidModel);
                         return RedirectToAction(nameof(Index));
                     }
-                }
-                catch
-                {
-                    return View();
+                    catch
+                    {
+                        return View();
+                    }
                 }
             }
             else
             {
                 ModelState.AddModelError("", "You have to fill all the required fields!");
-                return View(FillInSelectList(UserId));
+                return View(model);
             }
         }
 
@@ -113,10 +119,11 @@ namespace TodoList.Controllers
         {
             var ATask = _TaskRepo.Find(id);
             var Categories = _CategoryRepo.List(_UserManager.GetUserId(User));
-            TaskCategoryVm model = new TaskCategoryVm()
+            EditTaskVm model = new EditTaskVm()
             {
                 TaskId = ATask.TodoTaskId,
                 Title = ATask.Title,
+                TimeStamp = ATask.TimeStamp,
                 Description = ATask.Description,
                 IsDone = ATask.IsDone,
                 Categories = Categories,
@@ -129,28 +136,39 @@ namespace TodoList.Controllers
         // POST: TodoTasksController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(TaskCategoryVm model)
+        public ActionResult Edit(EditTaskVm model)
         {
+            var UserId = _UserManager.GetUserId(User); 
             if (ModelState.IsValid)
             {
-                try
+                var UserIdOfSelectedCategory = _CategoryRepo.Find(model.CategoryId).UserId;
+                var CurrentUserId = _UserManager.GetUserId(User);
+                bool CompareResult = string.Equals(UserIdOfSelectedCategory, CurrentUserId);
+                if (!CompareResult)
                 {
-                    var UserId = _UserManager.GetUserId(User);
-                    TodoTask ATask = new TodoTask()
-                    {
-                        UserId = UserId,
-                        TodoTaskId = model.TaskId,
-                        Title = model.Title,
-                        Description = model.Description,
-                        IsDone = model.IsDone,
-                        CategoryId = model.CategoryId
-                    };
-                    _TaskRepo.Edit(ATask);
                     return RedirectToAction(nameof(Index));
                 }
-                catch
+                else
                 {
-                    return NotFound();
+                    try
+                    {
+                        TodoTask ATask = new TodoTask()
+                        {
+                            UserId = UserId,
+                            TodoTaskId = model.TaskId,
+                            Title = model.Title,
+                            Description = model.Description,
+                            IsDone = model.IsDone,
+                            CategoryId = model.CategoryId,
+                            TimeStamp = model.TimeStamp
+                        };
+                        _TaskRepo.Edit(ATask);
+                        return RedirectToAction(nameof(Index));
+                    }
+                    catch
+                    {
+                        return NotFound();
+                    }
                 }
             }
             else
@@ -189,17 +207,6 @@ namespace TodoList.Controllers
             var AllCategories = _CategoryRepo.List(UserId).ToList();
             AllCategories.Insert(0, new Category { CategoryId = -1, Title = "--- Please select a category ---" });
             return AllCategories;
-        }
-        public TaskCategoryVm SetTheModelToGetMethod()
-        {
-            var UserId = _UserManager.GetUserId(User);
-            var AllCategories = FillInSelectList(UserId);
-            TaskCategoryVm model = new TaskCategoryVm
-            {
-                UserId = UserId,
-                Categories = AllCategories
-            };
-            return model;
         }
     }
 }

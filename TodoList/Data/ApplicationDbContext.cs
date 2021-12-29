@@ -33,12 +33,12 @@ namespace TodoList.Data
      .HasOne<Category>(p => p.ParentCategory)
      .WithMany(s => s.ChildTasks)
      .HasForeignKey(p => p.CategoryId);
-            modelBuilder.Entity<TaskCategoryVm>()
+            modelBuilder.Entity<CreateTaskVm>()
                 .HasNoKey();
         }
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<TodoTask> Tasks { get; set; }
-        public DbSet<TodoList.Models.ViewModels.TaskCategoryVm> TaskCategoryVm { get; set; }
+        public DbSet<TodoList.Models.ViewModels.CreateTaskVm> TaskCategoryVm { get; set; }
     }
 }
